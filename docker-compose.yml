@@ -1,0 +1,13 @@
+version: '2'
+services:
+  database:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=tiklies-root
+      - MYSQL_DATABASE=tiklikes
+      - MYSQL_USER=tiklikes
+      - MYSQL_PASSWORD=tiklikes
+volumes:
+  db_data: {}

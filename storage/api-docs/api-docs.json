@@ -1,0 +1,605 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "TikProfile RESTful API",
+        "contact": {
+            "name": "Zhao SongXun",
+            "email": "songxunzhao1991@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "summary": "Authenticate user",
+                "operationId": "login",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "user_id"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "description": "TikTok user ID",
+                                        "type": "string"
+                                    },
+                                    "cookies.dat": {
+                                        "description": "cookies file of session",
+                                        "type": "file"
+                                    },
+                                    "settings.dat": {
+                                        "description": "settings file of session",
+                                        "type": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Return jwt token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "description": "JWT access token",
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "description": "Token type: bearer",
+                                            "type": "string"
+                                        },
+                                        "expires_in": {
+                                            "description": "Expire time",
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/hashtag/search": {
+            "get": {
+                "summary": "Search hash tags",
+                "operationId": "searchHashTag",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "Keyword to be searched for",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Return array of hash tags",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ChallengeInfo"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "status_code": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/hashtag/list": {
+            "get": {
+                "summary": "Get popular hash tags",
+                "operationId": "listHashTag",
+                "responses": {
+                    "200": {
+                        "description": "Return array of hash tags",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ChallengeInfo"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "status_code": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/": {
+            "post": {
+                "summary": "Get random user",
+                "operationId": "GetRandomUser",
+                "requestBody": {},
+                "responses": {
+                    "200": {
+                        "description": "Return random user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "status_code": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{sec_uid}/follow": {
+            "post": {
+                "summary": "Follow a user",
+                "operationId": "FollowUser",
+                "parameters": [
+                    {
+                        "name": "sec_uid",
+                        "in": "path",
+                        "description": "Security user id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Return random user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "status_code": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ChallengeInfo": {
+                "title": "Channel model",
+                "description": "TikTok Channel model",
+                "properties": {
+                    "cid": {
+                        "description": "Channel id",
+                        "type": "string"
+                    },
+                    "cha_name": {
+                        "description": "Channel name",
+                        "type": "string"
+                    },
+                    "schema": {
+                        "description": "Schema",
+                        "type": "string"
+                    },
+                    "desc": {
+                        "description": "Description",
+                        "type": "string"
+                    },
+                    "author": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "user_count": {
+                        "description": "User count",
+                        "type": "integer"
+                    },
+                    "share_info": {
+                        "$ref": "#/components/schemas/ShareInfo"
+                    },
+                    "type": {
+                        "description": "Channel type",
+                        "type": "integer"
+                    },
+                    "sub_type": {
+                        "description": "Channel sub type",
+                        "type": "integer"
+                    },
+                    "is_pgcshow": {
+                        "description": "",
+                        "type": "boolean"
+                    },
+                    "collect_stat": {
+                        "description": "Collecting stat?",
+                        "type": "integer"
+                    },
+                    "is_challenge": {
+                        "description": "Is challenge?",
+                        "type": "integer"
+                    },
+                    "view_count": {
+                        "description": "Count of user views",
+                        "type": "integer"
+                    },
+                    "is_commerce": {
+                        "description": "Is commerce channel?",
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "ImageUrl": {
+                "title": "TikTok image url",
+                "description": "TikTok Image Url",
+                "properties": {
+                    "height": {
+                        "description": "Image height",
+                        "type": "integer"
+                    },
+                    "uri": {
+                        "description": "Image uri",
+                        "type": "string"
+                    },
+                    "url_list": {
+                        "description": "Image url list",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "width": {
+                        "description": "Image width",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "MusicianData": {
+                "title": "Musician data model",
+                "description": "Musician data model",
+                "properties": {
+                    "music_count": {
+                        "description": "Music count",
+                        "type": "integer"
+                    },
+                    "music_used_count": {
+                        "description": "Music used count",
+                        "type": "integer"
+                    },
+                    "digg_count": {
+                        "description": "Digg count",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "ShareInfo": {
+                "title": "Sharing information",
+                "description": "Various sharing information",
+                "properties": {
+                    "share_url": {
+                        "description": "Share url",
+                        "type": "string"
+                    },
+                    "share_weibo_desc": {
+                        "description": "Share weibo description",
+                        "type": "string"
+                    },
+                    "share_title": {
+                        "description": "Share title",
+                        "type": "string"
+                    },
+                    "share_qrcode_url": {
+                        "description": "Share qrcode url",
+                        "$ref": "#/components/schemas/ImageUrl"
+                    },
+                    "share_image_url": {
+                        "description": "Share image url",
+                        "$ref": "#/components/schemas/ImageUrl"
+                    },
+                    "share_title_myself": {
+                        "description": "Share title myself",
+                        "type": "string"
+                    },
+                    "share_desc": {
+                        "description": "Share description",
+                        "type": "string"
+                    },
+                    "bool_persist": {
+                        "description": "Persist?",
+                        "type": "integer"
+                    },
+                    "share_title_other": {
+                        "description": "Shared other title",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "title": "User model",
+                "description": "User model",
+                "properties": {
+                    "has_unread_story": {
+                        "description": "boolean"
+                    },
+                    "uid": {
+                        "description": "string"
+                    },
+                    "avatar_thumb": {
+                        "description": "Avatar thumbnail",
+                        "$ref": "#/components/schemas/ImageUrl"
+                    },
+                    "unique_id": {
+                        "description": "Unique id",
+                        "type": "string"
+                    },
+                    "type_label": {
+                        "description": "Type label",
+                        "$ref": "#/components/schemas/ImageUrl"
+                    },
+                    "follower_status": {
+                        "description": "status of follower",
+                        "type": "integer"
+                    },
+                    "is_verified": {
+                        "description": "Is verified?",
+                        "type": "boolean"
+                    },
+                    "avatar_300x300": {
+                        "description": "Avatar image 300x300",
+                        "$ref": "#/components/schemas/ImageUrl"
+                    },
+                    "avatar_larger": {
+                        "description": "Larger avatar image",
+                        "$ref": "#/components/schemas/ImageUrl"
+                    },
+                    "secret": {
+                        "description": "Secret code",
+                        "type": "integer"
+                    },
+                    "cover_url": {
+                        "description": "Cover image url",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ImageUrl"
+                        }
+                    },
+                    "sec_uid": {
+                        "description": "User security id",
+                        "type": "string"
+                    },
+                    "nickname": {
+                        "description": "User nickname",
+                        "type": "string"
+                    },
+                    "verification_type": {
+                        "description": "Verification type",
+                        "type": "integer"
+                    },
+                    "follow_status": {
+                        "description": "Follow status",
+                        "type": "integer"
+                    },
+                    "commerce_user_level": {
+                        "description": "Commerce user level",
+                        "type": "integer"
+                    },
+                    "with_new_goods": {
+                        "description": "With new goods?",
+                        "type": "boolean"
+                    },
+                    "is_blocked": {
+                        "description": "User blocked?",
+                        "type": "boolean"
+                    },
+                    "short_id": {
+                        "description": "Short user id",
+                        "type": "string"
+                    },
+                    "profile_tab_type": {
+                        "description": "Profile tab type",
+                        "type": "integer"
+                    },
+                    "favoriting_count": {
+                        "description": "Favorite count",
+                        "type": "integer"
+                    },
+                    "share_info": {
+                        "description": "Sharing information",
+                        "$ref": "#/components/schemas/ShareInfo"
+                    },
+                    "apple_account": {
+                        "description": "Apple account",
+                        "type": "integer"
+                    },
+                    "signature_language": {
+                        "description": "Signature language",
+                        "type": "string"
+                    },
+                    "sync_to_toutiao": {
+                        "description": "Synchronize to toutiao",
+                        "type": "integer"
+                    },
+                    "birthday": {
+                        "description": "Birthday",
+                        "type": "string"
+                    },
+                    "following_count": {
+                        "description": "Following count",
+                        "type": "integer"
+                    },
+                    "follower_count": {
+                        "description": "Follower count",
+                        "type": "integer"
+                    },
+                    "birthday_hide_level": {
+                        "description": "Hide birthday level",
+                        "type": "integer"
+                    },
+                    "with_fusion_shop_entry": {
+                        "description": "Has fusion shop entry?",
+                        "type": "boolean"
+                    },
+                    "is_star": {
+                        "description": "Is starred user?",
+                        "type": "boolean"
+                    },
+                    "with_commerce_entry": {
+                        "description": "With commerce entry?",
+                        "type": "boolean"
+                    },
+                    "ins_id": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "gender": {
+                        "description": "User gender",
+                        "type": "integer"
+                    },
+                    "room_id": {
+                        "description": "User room id",
+                        "type": "integer"
+                    },
+                    "show_favorite_list": {
+                        "description": "Show favorite list?",
+                        "type": "boolean"
+                    },
+                    "message_chat_entry": {
+                        "description": "Able to send chat message?",
+                        "type": "boolean"
+                    },
+                    "dongtai_count": {
+                        "description": "Dongtai count",
+                        "type": "integer"
+                    },
+                    "is_effect_artist": {
+                        "description": "Is effect artist?",
+                        "type": "boolean"
+                    },
+                    "total_favorited": {
+                        "description": "Total favorite count",
+                        "type": "integer"
+                    },
+                    "original_musician": {
+                        "description": "Original Musician",
+                        "$ref": "#/components/schemas/MusicianData"
+                    },
+                    "watch_status": {
+                        "description": "Watch status",
+                        "type": "integer"
+                    },
+                    "is_activity_user": {
+                        "description": "Is activity user?",
+                        "type": "boolean"
+                    },
+                    "recommend_user_reason_source": {
+                        "description": "Recommend user reason?",
+                        "type": "integer"
+                    },
+                    "forward_count": {
+                        "description": "Forward count",
+                        "type": "integer"
+                    },
+                    "avatar_medium": {
+                        "description": "Avatar Medium",
+                        "$ref": "#/components/schemas/ImageUrl"
+                    },
+                    "mplatform_followers_count": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "live_commerce": {
+                        "description": "",
+                        "type": "boolean"
+                    },
+                    "aweme_count": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "video_icon": {
+                        "description": "Video icon",
+                        "$ref": "#/components/schemas/ImageUrl"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    }
+}
